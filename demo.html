@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Airfryer-Umrechner – Live-Demo</title>
+<style>
+/* Keine externen Schriften oder Skripte (DSGVO): nur Systemschriften. */
+:root{
+  --bg:#F4EFE6; --surface:#FFFFFF; --surface-2:#FAF7F1; --ink:#1F2A24; --muted:#5E6660; --line:#E1D9CB;
+  --accent:#E8872A; --accent-ink:#2E1700; --green:#2F6B4F; --green-soft:#E1EEE6; --warn:#A33A22; --warn-soft:#F8E4DC;
+  --blue:#2D5286; --blue-soft:#E0E8F4;
+  --display: ui-rounded, "SF Pro Rounded", "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, "Roboto Mono", monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.5;padding:0 12px 16px}
+.wrap{max-width:580px;margin:0 auto}
+header.top{padding:22px 0 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.kicker{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.brand{font-family:var(--display);font-weight:800;font-size:27px;letter-spacing:-.02em;line-height:1.1;margin:2px 0 0}
+.sub{font-size:13.5px;color:var(--muted);margin-top:4px}
+.themebtn{flex:none;font:600 13px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 11px;cursor:pointer}
+nav.tabs{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+nav.tabs button{font:600 13px var(--body);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 2px;cursor:pointer;min-height:44px}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.panel{display:flex;flex-direction:column;gap:14px;padding-top:8px}
+h2{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em;margin:6px 0 0;text-wrap:balance}
+.lede{color:var(--muted);margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.stack{display:flex;flex-direction:column;gap:14px}
+label,.lab{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+input,select{width:100%;font:500 17px var(--body);color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end}
+.seg{display:grid;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:4px}
+.seg.c2{grid-template-columns:1fr 1fr}
+.seg.c3{grid-template-columns:repeat(3,1fr)}
+.seg button{font:600 13.5px var(--body);border:0;background:transparent;color:var(--muted);padding:10px 4px;border-radius:9px;cursor:pointer;line-height:1.25;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:600 13px var(--body);border:1px solid var(--line);background:var(--surface-2);color:var(--muted);border-radius:999px;padding:8px 12px;cursor:pointer;min-height:38px}
+.chips button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.scroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.scroll button{flex:none}
+/* Ergebnis */
+.dial{background:var(--ink);color:var(--bg);border-radius:20px;padding:18px;display:grid;grid-template-columns:1fr 1.25fr;gap:10px;position:relative;overflow:hidden}
+.dial::after{content:"";position:absolute;right:-70px;top:-70px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,var(--accent) 0%,transparent 65%);opacity:.38;pointer-events:none}
+.dial .lab{color:inherit;opacity:.72;margin-bottom:2px}
+.val{font-family:var(--mono);font-weight:700;font-size:34px;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.val span{font-size:16px;opacity:.75;margin-left:3px;font-family:var(--body)}
+.dial .foot{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;position:relative;z-index:1}
+.chip{font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.14)}
+.chip.hot{background:var(--accent);color:var(--accent-ink)}
+.msg{display:flex;gap:10px;align-items:flex-start;border-radius:12px;padding:12px;font-size:14px}
+.msg .dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px}
+.msg.warn{background:var(--warn-soft)} .msg.warn .dot{background:var(--warn)} .msg.warn b{color:var(--warn)}
+.msg.info{background:var(--green-soft)} .msg.info .dot{background:var(--green)} .msg.info b{color:var(--green)}
+.note{font-size:13px;color:var(--muted);margin:0}
+.btn{font:700 15px var(--body);border:0;border-radius:12px;padding:13px 14px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;width:100%}
+.btn.ghost{background:var(--surface-2);color:var(--ink);border:1px solid var(--line);width:auto;min-height:40px;padding:9px 12px;font-size:13.5px}
+/* Listen */
+ul.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center}
+.iname{font-weight:600;line-height:1.3}
+.imeta{font-size:12.5px;color:var(--muted);margin-top:3px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.iread{font-family:var(--mono);font-weight:700;font-size:15px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.iread small{display:block;font-family:var(--body);font-weight:500;font-size:12.5px;color:var(--muted)}
+.item .btn.ghost{grid-column:1/-1;justify-self:start}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--green-soft);color:var(--green)}
+.tag.fz{background:var(--blue-soft);color:var(--blue)}
+.tag.safe{background:var(--warn-soft);color:var(--warn)}
+.num{font-family:var(--mono);font-weight:700;color:var(--accent)}
+.empty{text-align:center;color:var(--muted);padding:24px 8px}
+/* Gerät */
+.offset{display:flex;align-items:center;gap:12px}
+.offset button{font:700 22px var(--body);width:52px;height:52px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);cursor:pointer}
+.offset .val{flex:1;text-align:center}
+/* Timer */
+.timer{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(548px,calc(100% - 32px));background:var(--ink);color:var(--bg);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:12px;z-index:10;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.timer .t{font-family:var(--mono);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.timer .what{flex:1;font-size:12.5px;line-height:1.3;min-width:0}
+.timer .what span{display:block;opacity:.8}
+.timer .what b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.timer button{flex:none;font:700 13px var(--body);border:0;border-radius:10px;padding:10px 10px;background:rgba(255,255,255,.16);color:inherit;cursor:pointer}
+.timer.done{background:var(--accent);color:var(--accent-ink)}
+.timer.done button{background:rgba(0,0,0,.12)}
+footer{margin-top:30px;font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
+footer b{color:var(--ink)}
+@media (max-width:380px){.row{grid-template-columns:1fr 1fr}.row>div:first-child{grid-column:1/-1}.val{font-size:29px}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+body{background:transparent}
+#demo{background:var(--bg);border-radius:22px;padding:4px 14px 16px;max-width:580px;margin:0 auto}
+.demobar{display:flex;align-items:center;gap:8px;background:var(--green);color:#fff;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:0 0 12px 12px;padding:7px 12px;margin:0 -2px 4px;width:max-content}
+.demobar i{width:8px;height:8px;border-radius:50%;background:#9FE3BD;display:inline-block;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35}}
+nav.tabs{position:static}
+nav.tabs button.locked{opacity:.8}
+.lockmsg{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px dashed var(--accent);border-radius:14px;padding:12px 14px;font-size:14px}
+.lockmsg b{display:block;margin-bottom:2px}
+.teaser{position:relative}
+.teaser ul{filter:blur(2.5px);pointer-events:none;user-select:none;opacity:.75}
+.demofoot{margin-top:14px;font-size:12.5px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div id="demo">
+  <div class="demobar"><i></i>Live-Demo · Bonus 1</div>
+  <header class="top" style="padding-top:10px">
+    <div>
+      <div class="kicker">Airfryer ohne Raten · Bonus 1</div>
+      <h1 class="brand">Der Airfryer-Umrechner</h1>
+      <div class="sub">Packungsangabe rein – Temperatur und Zeit für deinen Airfryer raus.</div>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Bereiche">
+    <button type="button" data-tab="convert" aria-selected="true">Umrechnen</button>
+    <button type="button" class="locked" data-tab="times" aria-selected="false">Garzeiten 🔒</button>
+    <button type="button" class="locked" data-tab="recipes" aria-selected="false">200 Rezepte 🔒</button>
+    <button type="button" class="locked" data-tab="device" aria-selected="false">Mein Gerät 🔒</button>
+  </nav>
+
+  <div id="lockBox" class="lockmsg" hidden><span>🔒</span><div id="lockText"></div></div>
+
+  <section class="panel" id="panel-convert">
+    <h2>Backofen- oder Packungsangabe umrechnen</h2>
+    <p class="lede">Gib ein, was auf der Packung oder im Rezept steht.</p>
+    <div class="card stack">
+      <div>
+        <span class="lab" id="lblMode">Auf der Packung steht</span>
+        <div class="seg c3" id="mode" role="group" aria-labelledby="lblMode">
+          <button type="button" data-mode="umluft" aria-pressed="true">Umluft /<br>Heißluft</button>
+          <button type="button" data-mode="ou" aria-pressed="false">Ober-/<br>Unterhitze</button>
+          <button type="button" data-mode="af" aria-pressed="false">Schon eine<br>Airfryer-Angabe</button>
+        </div>
+      </div>
+      <div class="row">
+        <div><label for="inTemp">Temp. °C</label><input id="inTemp" type="number" inputmode="numeric" value="200" min="50" max="300"></div>
+        <div><label for="inFrom">Minuten</label><input id="inFrom" type="number" inputmode="numeric" value="25" min="1" max="300"></div>
+        <div><label for="inTo">bis Min.</label><input id="inTo" type="number" inputmode="numeric" placeholder="optional" min="1" max="300"></div>
+      </div>
+      <div>
+        <span class="lab" id="lblKind">Was kommt in den Korb?</span>
+        <div class="chips" id="kind" role="group" aria-labelledby="lblKind">
+          <button type="button" data-kind="other" aria-pressed="true">Sonstiges</button>
+          <button type="button" data-kind="potato" aria-pressed="false">Kartoffelprodukt</button>
+          <button type="button" data-kind="meat" aria-pressed="false">Fleisch & Geflügel</button>
+          <button type="button" data-kind="bake" aria-pressed="false">Kuchen & Gebäck</button>
+        </div>
+      </div>
+    </div>
+    <div class="dial" aria-live="polite">
+      <div><div class="lab">Airfryer</div><div class="val" id="outTemp">180<span>°C</span></div></div>
+      <div><div class="lab">Garzeit</div><div class="val" id="outTime">17–20<span>Min.</span></div></div>
+      <div class="foot">
+        <span class="chip hot" id="outCheck">Ab 17 Min. nachsehen</span>
+        <span class="chip">Nach der Hälfte schütteln oder wenden</span>
+      </div>
+    </div>
+    <div id="convMsgs" class="stack" style="gap:10px"></div>
+    <button class="btn" id="convTimer" type="button">Timer starten 🔒</button>
+    <p class="note" id="convExplain"></p>
+  </section>
+
+  <section class="panel teaser" id="panel-times" hidden>
+    <h2>Garzeiten auf einen Blick</h2>
+    <ul class="list">
+      <li class="item"><div><div class="iname">Pommes, normal</div><div class="imeta"><span class="tag fz">Tiefkühl</span></div></div><div class="iread">180 °C<small>12–16 Min.</small></div></li>
+      <li class="item"><div><div class="iname">Chicken Nuggets</div><div class="imeta"><span class="tag fz">Tiefkühl</span></div></div><div class="iread">200 °C<small>10–12 Min.</small></div></li>
+      <li class="item"><div><div class="iname">Lachsfilet</div><div class="imeta"><span class="tag">Frisch</span></div></div><div class="iread">180 °C<small>10–12 Min.</small></div></li>
+    </ul>
+  </section>
+  <section class="panel teaser" id="panel-recipes" hidden>
+    <h2>Rezept-Timer für alle 200 Rezepte</h2>
+    <ul class="list">
+      <li class="item"><div><div class="iname"><span class="num">1</span> · Rührei-Muffins mit Schinken</div><div class="imeta">Kapitel 1 · Frühstück & Brunch</div></div><div class="iread">160 °C<small>12 Min.</small></div></li>
+      <li class="item"><div><div class="iname"><span class="num">2</span> · Eier im Schinkennest</div><div class="imeta">Kapitel 1 · Frühstück & Brunch</div></div><div class="iread">170 °C<small>10 Min.</small></div></li>
+      <li class="item"><div><div class="iname"><span class="num">3</span> · Schnelle Quarkbrötchen</div><div class="imeta">Kapitel 1 · Frühstück & Brunch</div></div><div class="iread">160 °C<small>15 Min.</small></div></li>
+    </ul>
+  </section>
+  <section class="panel teaser" id="panel-device" hidden>
+    <h2>Mein Gerät</h2>
+    <ul class="list">
+      <li class="item"><div><div class="iname">Korb-Airfryer oder Airfryer-Ofen</div><div class="imeta">Bauart wählen</div></div><div class="iread">+3<small>Min.</small></div></li>
+      <li class="item"><div><div class="iname">Persönliche Korrektur</div><div class="imeta">−5 bis +10 Minuten</div></div><div class="iread">±0<small>Min.</small></div></li>
+    </ul>
+  </section>
+
+  <div class="demofoot">Demo mit der Umrechnen-Funktion. Die volle Version bekommst du nach dem Kauf.</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const r5=n=>Math.round(n/5)*5;
+const LOCK={
+  times:"<b>Im vollen Umrechner: Garzeiten-Tabelle</b>38 Lebensmittel von Pommes bis Lachs, jedes mit Temperatur, Zeit und Timer.",
+  recipes:"<b>Im vollen Umrechner: alle 200 Rezepte</b>Suche nach Nummer oder Name, mit Temperatur, Zeit und Timer für jedes Rezept aus dem Buch.",
+  device:"<b>Im vollen Umrechner: Mein Gerät</b>Einmal einstellen, ob Korb oder Ofen und wie schnell dein Gerät gart – alle Zeiten passen sich an.",
+  timer:"<b>Im vollen Umrechner: Timer</b>Mit Erinnerung zum Schütteln nach der Hälfte, Signalton und Vibration am Ende."
+};
+function lock(key){
+  $("#lockText").innerHTML=LOCK[key]; $("#lockBox").hidden=false;
+}
+$$("nav.tabs button").forEach(b=>b.addEventListener("click",()=>{
+  const t=b.dataset.tab;
+  $$("nav.tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["convert","times","recipes","device"].forEach(p=>$("#panel-"+p).hidden=(p!==t));
+  if(t==="convert"){$("#lockBox").hidden=true}else{lock(t)}
+  sendH();
+}));
+let mode="umluft", kind="other";
+$$("#mode button").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;$$("#mode button").forEach(x=>x.setAttribute("aria-pressed",x===b));convert()}));
+$$("#kind button").forEach(b=>b.addEventListener("click",()=>{kind=b.dataset.kind;$$("#kind button").forEach(x=>x.setAttribute("aria-pressed",x===b));convert()}));
+["#inTemp","#inFrom","#inTo"].forEach(s=>$(s).addEventListener("input",convert));
+$("#convTimer").addEventListener("click",()=>{lock("timer");sendH()});
+function msg(html){return `<div class="msg info"><span class="dot"></span><div>${html}</div></div>`}
+function convert(){
+  const t=parseFloat($("#inTemp").value), a=parseFloat($("#inFrom").value);
+  let b=parseFloat($("#inTo").value); if(!isFinite(b)||b<a) b=a;
+  const msgs=[];
+  if(!isFinite(t)||!isFinite(a)||a<=0||t<50){
+    $("#outTemp").innerHTML="–<span>°C</span>";$("#outTime").innerHTML="–<span>Min.</span>";$("#outCheck").textContent="Temperatur und Zeit eingeben";
+    $("#convMsgs").innerHTML="";$("#convExplain").textContent="";sendH();return;
+  }
+  let af,tMin,tMax,explain;
+  if(mode==="af"){af=t;tMin=a;tMax=b;explain="Die Packung nennt schon Werte für den Airfryer – die haben Vorrang.";}
+  else{
+    const delta=mode==="ou"?40:20; af=r5(t-delta);
+    tMin=Math.max(1,Math.floor(a*0.7)); tMax=Math.max(tMin,Math.round(b*0.8));
+    explain=mode==="ou"
+      ?`So rechnet der Umrechner: Ober-/Unterhitze ${t} °C → Umluft ca. ${t-20} °C → Airfryer ca. ${t-40} °C (gerundet ${r5(t-40)} °C). Zeit 20–30 % kürzer: ${a===b?a:a+"–"+b} Min. → ${tMin}–${tMax} Min.`
+      :`So rechnet der Umrechner: Umluft ${t} °C → Airfryer ca. 20 °C weniger (${af} °C). Zeit 20–30 % kürzer: ${a===b?a:a+"–"+b} Min. → ${tMin}–${tMax} Min.`;
+  }
+  if(af>200){msgs.push(msg(`<b>Die meisten Airfryer gehen bis 200 °C.</b> Der Umrechner rechnet mit 200 °C.`));af=200;}
+  if(af<80){af=80;msgs.push(msg(`<b>Sehr niedrige Temperatur.</b> Viele Airfryer starten erst bei 80 °C.`));}
+  if(kind==="potato"&&af>180){af=180;msgs.push(msg(`<b>Kartoffelprodukte werden bei 180 °C am gleichmäßigsten goldgelb.</b> Braucht es etwas länger, einfach 1–2 Minuten dazugeben.`));}
+  if(kind==="bake"&&af>170){msgs.push(msg(`<b>Kuchen & Gebäck gelingen meist bei 150–170 °C.</b> Wird es zu dunkel, mit Backpapier abdecken oder auf 160–170 °C runtergehen.`));}
+  if(kind==="meat"){msgs.push(msg(`<b>Garprobe:</b> Fertig, wenn der Fleischsaft klar ist und Geflügel innen weiß.`));}
+  if(mode!=="af"&&a>=45){msgs.push(msg(`<b>Große Stücke</b> (Braten, ganze Kartoffeln) nach der Hälfte der Zeit wenden.`));}
+  $("#outTemp").innerHTML=af+"<span>°C</span>";
+  $("#outTime").innerHTML=(tMin===tMax?tMin:tMin+"–"+tMax)+"<span>Min.</span>";
+  $("#outCheck").textContent="Ab "+tMin+" Min. nachsehen";
+  $("#convMsgs").innerHTML=msgs.join("");
+  $("#convExplain").textContent=explain;
+  sendH();
+}
+let lastH=0;
+function sendH(){
+  requestAnimationFrame(()=>{
+    const h=Math.ceil($("#demo").getBoundingClientRect().height)+8;
+    if(Math.abs(h-lastH)<2)return; lastH=h;
+    try{parent.postMessage({type:"umrechner-demo-height",height:h},"*")}catch(e){}
+  });
+}
+window.addEventListener("resize",()=>{lastH=0;sendH()});
+window.addEventListener("load",sendH);
+convert();
+})();
+</script>
+</body>
+</html>
