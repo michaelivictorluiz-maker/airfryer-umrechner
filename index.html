@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1F2A24">
+<title>Airfryer-Umrechner</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231F2A24'/%3E%3Cpath d='M20 22h24l-3 26H23z' fill='%23E8872A'/%3E%3Crect x='18' y='16' width='28' height='6' rx='3' fill='%23F4EFE6'/%3E%3C/svg%3E">
+<style>
+/* Keine externen Schriften oder Skripte (DSGVO): nur Systemschriften. */
+:root{
+  --bg:#F4EFE6; --surface:#FFFFFF; --surface-2:#FAF7F1; --ink:#1F2A24; --muted:#5E6660; --line:#E1D9CB;
+  --accent:#E8872A; --accent-ink:#2E1700; --green:#2F6B4F; --green-soft:#E1EEE6; --warn:#A33A22; --warn-soft:#F8E4DC;
+  --blue:#2D5286; --blue-soft:#E0E8F4;
+  --display: ui-rounded, "SF Pro Rounded", "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, "Roboto Mono", monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121815; --surface:#1A221E; --surface-2:#202A25; --ink:#ECEFEA; --muted:#A1ABA5; --line:#2E3A34;
+    --accent:#F29B45; --accent-ink:#241200; --green:#6CC29A; --green-soft:#1D3228; --warn:#F2917A; --warn-soft:#3A2119;
+    --blue:#9DB8EA; --blue-soft:#1C2840; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121815; --surface:#1A221E; --surface-2:#202A25; --ink:#ECEFEA; --muted:#A1ABA5; --line:#2E3A34;
+  --accent:#F29B45; --accent-ink:#241200; --green:#6CC29A; --green-soft:#1D3228; --warn:#F2917A; --warn-soft:#3A2119;
+  --blue:#9DB8EA; --blue-soft:#1C2840; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.5;padding:0 16px 120px}
+.wrap{max-width:580px;margin:0 auto}
+header.top{padding:22px 0 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.kicker{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.brand{font-family:var(--display);font-weight:800;font-size:27px;letter-spacing:-.02em;line-height:1.1;margin:2px 0 0}
+.sub{font-size:13.5px;color:var(--muted);margin-top:4px}
+.themebtn{flex:none;font:600 13px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 11px;cursor:pointer}
+nav.tabs{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+nav.tabs button{font:600 13px var(--body);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 2px;cursor:pointer;min-height:44px}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section.panel{display:flex;flex-direction:column;gap:14px;padding-top:8px}
+h2{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em;margin:6px 0 0;text-wrap:balance}
+.lede{color:var(--muted);margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.stack{display:flex;flex-direction:column;gap:14px}
+label,.lab{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+input,select{width:100%;font:500 17px var(--body);color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end}
+.seg{display:grid;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:4px}
+.seg.c2{grid-template-columns:1fr 1fr}
+.seg.c3{grid-template-columns:repeat(3,1fr)}
+.seg button{font:600 13.5px var(--body);border:0;background:transparent;color:var(--muted);padding:10px 4px;border-radius:9px;cursor:pointer;line-height:1.25;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:600 13px var(--body);border:1px solid var(--line);background:var(--surface-2);color:var(--muted);border-radius:999px;padding:8px 12px;cursor:pointer;min-height:38px}
+.chips button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.scroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.scroll button{flex:none}
+/* Ergebnis */
+.dial{background:var(--ink);color:var(--bg);border-radius:20px;padding:18px;display:grid;grid-template-columns:1fr 1.25fr;gap:10px;position:relative;overflow:hidden}
+.dial::after{content:"";position:absolute;right:-70px;top:-70px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,var(--accent) 0%,transparent 65%);opacity:.38;pointer-events:none}
+.dial .lab{color:inherit;opacity:.72;margin-bottom:2px}
+.val{font-family:var(--mono);font-weight:700;font-size:34px;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.val span{font-size:16px;opacity:.75;margin-left:3px;font-family:var(--body)}
+.dial .foot{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;position:relative;z-index:1}
+.chip{font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.14)}
+.chip.hot{background:var(--accent);color:var(--accent-ink)}
+.msg{display:flex;gap:10px;align-items:flex-start;border-radius:12px;padding:12px;font-size:14px}
+.msg .dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px}
+.msg.warn{background:var(--warn-soft)} .msg.warn .dot{background:var(--warn)} .msg.warn b{color:var(--warn)}
+.msg.info{background:var(--green-soft)} .msg.info .dot{background:var(--green)} .msg.info b{color:var(--green)}
+.note{font-size:13px;color:var(--muted);margin:0}
+.btn{font:700 15px var(--body);border:0;border-radius:12px;padding:13px 14px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:48px;width:100%}
+.btn.ghost{background:var(--surface-2);color:var(--ink);border:1px solid var(--line);width:auto;min-height:40px;padding:9px 12px;font-size:13.5px}
+/* Listen */
+ul.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center}
+.iname{font-weight:600;line-height:1.3}
+.imeta{font-size:12.5px;color:var(--muted);margin-top:3px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.iread{font-family:var(--mono);font-weight:700;font-size:15px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.iread small{display:block;font-family:var(--body);font-weight:500;font-size:12.5px;color:var(--muted)}
+.item .btn.ghost{grid-column:1/-1;justify-self:start}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--green-soft);color:var(--green)}
+.tag.fz{background:var(--blue-soft);color:var(--blue)}
+.tag.safe{background:var(--warn-soft);color:var(--warn)}
+.num{font-family:var(--mono);font-weight:700;color:var(--accent)}
+.empty{text-align:center;color:var(--muted);padding:24px 8px}
+/* Gerät */
+.offset{display:flex;align-items:center;gap:12px}
+.offset button{font:700 22px var(--body);width:52px;height:52px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);cursor:pointer}
+.offset .val{flex:1;text-align:center}
+/* Timer */
+.timer{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(548px,calc(100% - 32px));background:var(--ink);color:var(--bg);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:12px;z-index:10;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.timer .t{font-family:var(--mono);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.timer .what{flex:1;font-size:12.5px;line-height:1.3;min-width:0}
+.timer .what span{display:block;opacity:.8}
+.timer .what b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.timer button{flex:none;font:700 13px var(--body);border:0;border-radius:10px;padding:10px 10px;background:rgba(255,255,255,.16);color:inherit;cursor:pointer}
+.timer.done{background:var(--accent);color:var(--accent-ink)}
+.timer.done button{background:rgba(0,0,0,.12)}
+footer{margin-top:30px;font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
+footer b{color:var(--ink)}
+@media (max-width:380px){.row{grid-template-columns:1fr 1fr}.row>div:first-child{grid-column:1/-1}.val{font-size:29px}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="kicker">Airfryer ohne Raten · Bonus 1</div>
+      <h1 class="brand">Der Airfryer-Umrechner</h1>
+      <div class="sub">Packungsangabe rein – Temperatur und Zeit für deinen Airfryer raus.</div>
+    </div>
+    <button class="themebtn" id="themeBtn" type="button" aria-label="Hell- oder Dunkelmodus">◐</button>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Bereiche">
+    <button role="tab" id="tab-convert" aria-controls="panel-convert" data-tab="convert">Umrechnen</button>
+    <button role="tab" id="tab-times" aria-controls="panel-times" data-tab="times">Garzeiten</button>
+    <button role="tab" id="tab-recipes" aria-controls="panel-recipes" data-tab="recipes">200 Rezepte</button>
+    <button role="tab" id="tab-device" aria-controls="panel-device" data-tab="device">Mein Gerät</button>
+  </nav>
+
+  <!-- UMRECHNEN -->
+  <section class="panel" id="panel-convert" role="tabpanel" aria-labelledby="tab-convert">
+    <h2>Backofen- oder Packungsangabe umrechnen</h2>
+    <p class="lede">Gib ein, was auf der Packung oder im Rezept steht.</p>
+
+    <div class="card stack">
+      <div>
+        <span class="lab" id="lblMode">Auf der Packung steht</span>
+        <div class="seg c3" id="mode" role="group" aria-labelledby="lblMode">
+          <button type="button" data-mode="umluft" aria-pressed="true">Umluft /<br>Heißluft</button>
+          <button type="button" data-mode="ou" aria-pressed="false">Ober-/<br>Unterhitze</button>
+          <button type="button" data-mode="af" aria-pressed="false">Schon eine<br>Airfryer-Angabe</button>
+        </div>
+      </div>
+      <div class="row">
+        <div><label for="inTemp">Temp. °C</label><input id="inTemp" type="number" inputmode="numeric" value="200" min="50" max="300"></div>
+        <div><label for="inFrom">Minuten</label><input id="inFrom" type="number" inputmode="numeric" value="25" min="1" max="300"></div>
+        <div><label for="inTo">bis Min.</label><input id="inTo" type="number" inputmode="numeric" placeholder="optional" min="1" max="300"></div>
+      </div>
+      <div>
+        <span class="lab" id="lblKind">Was kommt in den Korb?</span>
+        <div class="chips" id="kind" role="group" aria-labelledby="lblKind">
+          <button type="button" data-kind="other" aria-pressed="true">Sonstiges</button>
+          <button type="button" data-kind="potato" aria-pressed="false">Kartoffelprodukt</button>
+          <button type="button" data-kind="meat" aria-pressed="false">Fleisch & Geflügel</button>
+          <button type="button" data-kind="bake" aria-pressed="false">Kuchen & Gebäck</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dial" aria-live="polite">
+      <div><div class="lab">Airfryer</div><div class="val" id="outTemp">180<span>°C</span></div></div>
+      <div><div class="lab">Garzeit</div><div class="val" id="outTime">17–20<span>Min.</span></div></div>
+      <div class="foot">
+        <span class="chip hot" id="outCheck">Ab 17 Min. nachsehen</span>
+        <span class="chip">Nach der Hälfte schütteln oder wenden</span>
+      </div>
+    </div>
+    <div id="convMsgs" class="stack" style="gap:10px"></div>
+    <button class="btn" id="convTimer" type="button">Timer starten</button>
+    <p class="note" id="convExplain"></p>
+  </section>
+
+  <!-- GARZEITEN -->
+  <section class="panel" id="panel-times" role="tabpanel" aria-labelledby="tab-times" hidden>
+    <h2>Garzeiten auf einen Blick</h2>
+    <p class="lede">Die Tabellen aus dem Anhang deines Buchs – mit Timer. Tiefkühlware gefroren in den Korb, ohne Auftauen.</p>
+    <div><label for="qTimes">Suchen</label><input id="qTimes" type="search" placeholder="z. B. Pommes, Lachs, Nuggets" autocomplete="off"></div>
+    <div class="chips" id="timesFilter" role="group" aria-label="Filter">
+      <button type="button" data-f="all" aria-pressed="true">Alle</button>
+      <button type="button" data-f="tk" aria-pressed="false">Tiefkühl</button>
+      <button type="button" data-f="fresh" aria-pressed="false">Frisch</button>
+    </div>
+    <ul class="list" id="timesList"></ul>
+    <p class="note">Steht auf der Packung eine Airfryer-Angabe, hat diese Vorrang. Korb höchstens halb voll.</p>
+  </section>
+
+  <!-- REZEPTE -->
+  <section class="panel" id="panel-recipes" role="tabpanel" aria-labelledby="tab-recipes" hidden>
+    <h2>Rezept-Timer für alle 200 Rezepte</h2>
+    <p class="lede">Rezeptnummer oder Namen eingeben, Timer starten. Zutaten und Zubereitung stehen im Buch.</p>
+    <div><label for="qRec">Rezept suchen</label><input id="qRec" type="search" placeholder="Nr. oder Name, z. B. Schnitzel" autocomplete="off"></div>
+    <div class="chips scroll" id="chapFilter" role="group" aria-label="Kapitel"></div>
+    <p class="note" id="recCount"></p>
+    <ul class="list" id="recList"></ul>
+  </section>
+
+  <!-- GERÄT -->
+  <section class="panel" id="panel-device" role="tabpanel" aria-labelledby="tab-device" hidden>
+    <h2>Mein Gerät</h2>
+    <p class="lede">Airfryer sind unterschiedlich stark. Stell hier einmal ein, wie deiner gart – alle Timer in dieser App rechnen das automatisch ein.</p>
+    <div class="card stack">
+      <span class="lab" id="lblType">Bauart</span>
+      <div class="seg c2" id="devType" role="group" aria-labelledby="lblType">
+        <button type="button" data-type="basket" aria-pressed="true">Korb-Airfryer<br>(auch Dual Zone)</button>
+        <button type="button" data-type="oven" aria-pressed="false">Airfryer-Ofen<br>mit Einschub</button>
+      </div>
+      <p class="note" id="typeNote"></p>
+    </div>
+    <div class="card stack">
+      <span class="lab">Persönliche Korrektur</span>
+      <div class="offset">
+        <button type="button" id="offMinus" aria-label="Eine Minute weniger">−</button>
+        <div class="val" id="offVal" aria-live="polite">±0<span>Min.</span></div>
+        <button type="button" id="offPlus" aria-label="Eine Minute mehr">+</button>
+      </div>
+      <p class="note">Bräunt dein Gerät schneller als angegeben? Dann 1–2 Minuten abziehen. Braucht es länger? Minuten dazugeben. Das merkt sich die App auf diesem Handy.</p>
+    </div>
+    <div class="msg info"><span class="dot"></span><div><b>So findest du deinen Wert:</b> Mach ein Rezept aus dem Buch, schau 2–3 Minuten vor Ende nach und notiere, ob es früher oder später fertig war.</div></div>
+    <button class="btn ghost" id="resetDev" type="button">Zurücksetzen</button>
+  </section>
+
+  <footer>
+    <div>Bonus zum E-Book „Airfryer ohne Raten". Nur für den persönlichen Gebrauch des Käufers.</div>
+  </footer>
+</div>
+
+<div class="timer" id="timer" hidden role="status" aria-live="polite">
+  <div class="t" id="tLeft">00:00</div>
+  <div class="what"><b id="tWhat">Timer</b><span id="tHint"></span></div>
+  <button type="button" id="tPause">Pause</button>
+  <button type="button" id="tStop">Stopp</button>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const $$=s=>Array.from(document.querySelectorAll(s));
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+const r5=n=>Math.round(n/5)*5;
+
+/* ---------- Theme ---------- */
+const root=document.documentElement;
+const savedTheme=store("aor-theme"); if(savedTheme) root.dataset.theme=savedTheme;
+$("#themeBtn").addEventListener("click",()=>{
+  const dark=root.dataset.theme?root.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme=dark?"light":"dark"; store("aor-theme",root.dataset.theme);
+});
+
+/* ---------- Tabs ---------- */
+const TABS=["convert","times","recipes","device"];
+function show(tab){
+  $$("nav.tabs button").forEach(b=>{b.setAttribute("aria-selected",b.dataset.tab===tab);b.tabIndex=b.dataset.tab===tab?0:-1});
+  TABS.forEach(t=>$("#panel-"+t).hidden=(t!==tab));
+  store("aor-tab",tab);
+}
+$$("nav.tabs button").forEach(b=>b.addEventListener("click",()=>{show(b.dataset.tab);window.scrollTo({top:0})}));
+const hash=(location.hash||"").slice(1);
+show(TABS.includes(hash)?hash:(store("aor-tab")||"convert"));
+
+/* ---------- Gerät ---------- */
+let devType=store("aor-type")||"basket";
+let devOff=parseInt(store("aor-off")||"0",10); if(!isFinite(devOff))devOff=0;
+function ovenExtra(){return devType==="oven"?3:0}
+function totalOff(){return devOff+ovenExtra()}
+function offLabel(){const o=totalOff();return o===0?"":(o>0?" (+"+o+" Min. für dein Gerät)":" ("+o+" Min. für dein Gerät)")}
+function renderDevice(){
+  $$("#devType button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.type===devType));
+  $("#typeNote").textContent=devType==="oven"
+    ?"Airfryer-Öfen brauchen häufig 2–4 Minuten länger. Die App rechnet +3 Minuten dazu. Speisen auf die mittlere Schiene und wenden statt schütteln."
+    :"Die Zeiten im Buch sind für Korb-Airfryer mit ca. 5–6 Litern geschrieben. Kleine Geräte unter 4 Litern garen oft etwas schneller.";
+  $("#offVal").innerHTML=(devOff>0?"+":devOff<0?"−":"±")+Math.abs(devOff)+"<span>Min.</span>";
+  store("aor-type",devType); store("aor-off",String(devOff));
+  convert(); renderTimes(); renderRecipes();
+}
+$$("#devType button").forEach(b=>b.addEventListener("click",()=>{devType=b.dataset.type;renderDevice()}));
+$("#offMinus").addEventListener("click",()=>{devOff=Math.max(-5,devOff-1);renderDevice()});
+$("#offPlus").addEventListener("click",()=>{devOff=Math.min(10,devOff+1);renderDevice()});
+$("#resetDev").addEventListener("click",()=>{devType="basket";devOff=0;renderDevice()});
+const adj=m=>Math.max(1,m+totalOff());
+
+/* ---------- Umrechnen ---------- */
+let mode="umluft", kind="other", convMin=17, convMax=20, convTempTxt="180 °C";
+$$("#mode button").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;$$("#mode button").forEach(x=>x.setAttribute("aria-pressed",x===b));convert()}));
+$$("#kind button").forEach(b=>b.addEventListener("click",()=>{kind=b.dataset.kind;$$("#kind button").forEach(x=>x.setAttribute("aria-pressed",x===b));convert()}));
+["#inTemp","#inFrom","#inTo"].forEach(s=>$(s).addEventListener("input",convert));
+function msg(type,html){return `<div class="msg ${type}"><span class="dot"></span><div>${html}</div></div>`}
+function convert(){
+  if(!$("#inTemp"))return;
+  const t=parseFloat($("#inTemp").value), a=parseFloat($("#inFrom").value);
+  let b=parseFloat($("#inTo").value); if(!isFinite(b)||b<a) b=a;
+  const msgs=[];
+  if(!isFinite(t)||!isFinite(a)||a<=0||t<50){
+    $("#outTemp").innerHTML="–<span>°C</span>";$("#outTime").innerHTML="–<span>Min.</span>";$("#outCheck").textContent="Temperatur und Zeit eingeben";
+    $("#convMsgs").innerHTML="";$("#convTimer").disabled=true;return;
+  }
+  $("#convTimer").disabled=false;
+  let af, tMin, tMax, explain;
+  if(mode==="af"){
+    af=t; tMin=a; tMax=b;
+    explain="Die Packung nennt schon Werte für den Airfryer – die haben Vorrang. Die App übernimmt sie und rechnet nur deine Geräte-Korrektur ein.";
+  }else{
+    const delta=mode==="ou"?40:20;
+    af=r5(t-delta);
+    tMin=Math.max(1,Math.floor(a*0.7)); tMax=Math.max(tMin,Math.round(b*0.8));
+    explain=mode==="ou"
+      ?`So rechnet die App: Ober-/Unterhitze ${t} °C → Umluft ca. ${t-20} °C → Airfryer ca. ${t-40} °C (gerundet ${r5(t-40)} °C). Zeit 20–30 % kürzer: ${a===b?a:a+"–"+b} Min. → ${tMin}–${tMax} Min. Das ist die Faustregel aus dem Buch.`
+      :`So rechnet die App: Umluft ${t} °C → Airfryer ca. 20 °C weniger (${af} °C). Zeit 20–30 % kürzer: ${a===b?a:a+"–"+b} Min. → ${tMin}–${tMax} Min. Das ist die Faustregel aus dem Buch.`;
+  }
+  // Grenzen und Lebensmittel-Regeln
+  if(af>200){msgs.push(msg("info",`<b>Die meisten Airfryer gehen bis 200 °C.</b> Die App rechnet mit 200 °C. Kann deiner mehr, bleib trotzdem lieber bei 200 °C und schau früher nach.`));af=200;}
+  if(af<80){af=80;msgs.push(msg("info",`<b>Sehr niedrige Temperatur.</b> Viele Airfryer starten erst bei 80 °C.`));}
+  if(kind==="potato"&&af>180){af=180;msgs.push(msg("info",`<b>Kartoffelprodukte werden bei 180 °C am gleichmäßigsten goldgelb.</b> Braucht es etwas länger, einfach 1–2 Minuten dazugeben.`));}
+  if(kind==="bake"&&af>170){msgs.push(msg("info",`<b>Kuchen & Gebäck gelingen meist bei 150–170 °C.</b> Bei ${af} °C kann die Oberfläche bräunen, bevor die Mitte gar ist. Wird es zu dunkel, mit Backpapier abdecken oder auf 160–170 °C runtergehen – dann eher das Ende der Zeitspanne nutzen.`));}
+  if(kind==="meat"){msgs.push(msg("info",`<b>Garprobe:</b> Fertig, wenn der Fleischsaft klar ist und Geflügel innen weiß.`));}
+  if(mode!=="af"&&a>=45){msgs.push(msg("info",`<b>Große Stücke</b> (Braten, ganze Kartoffeln) nach der Hälfte der Zeit wenden.`));}
+  convMin=adj(tMin); convMax=adj(tMax); convTempTxt=af+" °C";
+  $("#outTemp").innerHTML=af+"<span>°C</span>";
+  $("#outTime").innerHTML=(convMin===convMax?convMin:convMin+"–"+convMax)+"<span>Min.</span>";
+  $("#outCheck").textContent="Ab "+convMin+" Min. nachsehen";
+  $("#convMsgs").innerHTML=msgs.join("");
+  $("#convExplain").textContent=explain+(totalOff()?` Deine Geräte-Einstellung (${totalOff()>0?"+":""}${totalOff()} Min.) ist schon eingerechnet.`:"")+" Vorheizen ist meist nicht nötig – wenn doch, reichen 3 Minuten.";
+}
+$("#convTimer").addEventListener("click",()=>startTimer(convMin,"Umgerechnet · "+convTempTxt,convMax));
+
+/* ---------- Garzeiten (Anhang des Buchs) ---------- */
+// [Name, Temperatur, von, bis, tk?, durchgaren?]
+const TIMES=[
+ ["Pommes, normal",180,12,16,1,0],["Pommes, dick (Steakhouse)",180,20,25,1,0],["Kartoffelspalten",180,16,20,1,0],
+ ["Kroketten",180,12,15,1,0],["Kartoffelpuffer",180,18,23,1,0],["Chicken Nuggets",200,10,12,1,1],
+ ["Fischstäbchen",200,9,10,1,0],["Seelachsfilet, paniert",200,10,12,1,0],["Tintenfischringe, paniert",200,8,10,1,0],
+ ["Mini-Frikadellen",200,10,12,1,1],["Frühlingsrollen",200,7,10,1,0],["Mozzarella-Sticks",200,6,7,1,0],
+ ["Zwiebelringe",200,10,12,1,0],["Pizzabrötchen",200,8,12,1,0],["Laugenbrezeln (aufbacken)",170,6,8,1,0],
+ ["Aufback-Brötchen",180,7,8,1,0],["Vegetarische Pattys",190,14,14,1,0],["Hähnchenkeulen",190,28,35,1,1],
+ ["Pommes, selbst geschnitten",180,20,25,0,0],["Hähnchenbrust (ca. 2,5 cm)",180,16,18,0,1],["Hähnchenflügel",190,22,25,0,1],
+ ["Hähnchenschenkel mit Knochen",190,24,28,0,1],["Schnitzel, paniert (5 mm)",190,11,12,0,1],["Frikadellen (2 cm)",180,14,14,0,1],
+ ["Bratwurst",190,10,12,0,1],["Rindersteak (2,5 cm, medium)",200,8,10,0,0],["Burger-Patty (1,5 cm)",190,10,10,0,1],
+ ["Lachsfilet",180,10,12,0,0],["Weißes Fischfilet",180,10,12,0,0],["Garnelen, roh",200,6,8,0,0],
+ ["Brokkoli-Röschen",190,10,10,0,0],["Blumenkohl-Röschen",200,12,14,0,0],["Paprika, Zucchini",200,10,12,0,0],
+ ["Grüne Bohnen",200,8,10,0,0],["Champignons",200,7,8,0,0],["Grüner Spargel",200,7,8,0,0],
+ ["Maiskolben, roh",200,18,20,0,0],["Eier (Größe M, gekocht)",150,10,14,0,0]
+];
+let tf="all";
+$$("#timesFilter button").forEach(b=>b.addEventListener("click",()=>{tf=b.dataset.f;$$("#timesFilter button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderTimes()}));
+$("#qTimes").addEventListener("input",renderTimes);
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/ß/g,"ss");
+function renderTimes(){
+  const q=norm($("#qTimes").value.trim()); const ul=$("#timesList"); ul.innerHTML="";
+  const rows=TIMES.filter(r=>(tf==="all"||(tf==="tk")===!!r[4])&&(!q||norm(r[0]).includes(q)));
+  if(!rows.length){ul.innerHTML=`<li class="empty">Nichts gefunden. Steht es auf einer Packung? Dann im Tab „Umrechnen" die Backofenangabe eingeben.</li>`;return;}
+  rows.forEach(r=>{
+    const [n,t,a,b,tk,safe]=r; const A=adj(a),B=adj(b);
+    const li=document.createElement("li"); li.className="item";
+    li.innerHTML=`<div><div class="iname">${n}</div><div class="imeta">${tk?'<span class="tag fz">Tiefkühl</span>':'<span class="tag">Frisch</span>'}${safe?'<span class="tag safe">durchgaren</span>':''}</div></div>
+      <div class="iread">${t} °C<small>${A===B?A:A+"–"+B} Min.</small></div>
+      <button class="btn ghost" type="button">Timer ${A} Min. starten</button>`;
+    li.querySelector("button").addEventListener("click",()=>startTimer(A,n+" · "+t+" °C",B));
+    ul.appendChild(li);
+  });
+}
+
+/* ---------- 200 Rezepte ---------- */
+const CHAPS=["","Frühstück & Brunch","Deutsche Klassiker","Aus dem Gefrierfach","Feierabend in 20 Minuten","Fleisch & Geflügel","Fisch & Meeresfrüchte","Gemüse & Vegetarisch","Kartoffeln & Beilagen","Süßes & Gebäck"];
+// [Nr, Name, Kapitel, °C, Min., aus dem Gefrierfach?]
+const REC=[[1,"Rührei-Muffins mit Schinken",1,160,12,0],[2,"Eier im Schinkennest",1,170,10,0],[3,"Schnelle Quarkbrötchen",1,160,15,0],[4,"Arme Ritter",1,180,8,0],[5,"Frühstückskartoffeln mit Paprika",1,180,18,0],[6,"Gebackenes Apfel-Porridge",1,170,15,0],[7,"Schinken-Käse-Toast",1,180,6,0],[8,"Frühstücks-Wrap mit Ei und Käse",1,180,6,0],[9,"Knuspriger Frühstücksspeck",1,180,8,0],[10,"Mini-Frittata mit Gemüse",1,160,14,0],[11,"Gekochte Eier ohne Wasser",1,150,14,0],[12,"Knuspergranola mit Nüssen",1,150,12,0],[13,"Bananen-Hafer-Muffins",1,160,15,0],[14,"Schinken-Käse-Croissants",1,170,10,0],[15,"Tomaten-Mozzarella-Toast",1,180,5,0],[16,"Brötchen vom Vortag wie frisch",1,180,4,0],[17,"Rostbratwürstchen mit Grilltomaten",1,190,10,0],[18,"Gebackener Quark mit Beeren",1,160,18,0],[19,"Knuspriges Schweineschnitzel",2,190,12,0],[20,"Saftige Frikadellen",2,180,14,0],[21,"Knusprige Reibekuchen",2,180,18,0],[22,"Cordon bleu vom Schwein",2,180,16,0],[23,"Paniertes Hähnchenschnitzel",2,190,12,0],[24,"Currywurst",2,190,10,0],[25,"Knuspriger Leberkäse",2,180,8,0],[26,"Kasseler-Kotelett mit Sauerkraut",2,180,12,0],[27,"Bratwurst mit Zwiebeln",2,190,12,0],[28,"Krustenbraten-Würfel",2,180,30,0],[29,"Hackbraten",2,170,35,0],[30,"Gefüllte Paprika",2,180,20,0],[31,"Flammkuchen Elsässer Art",2,190,8,0],[32,"Angebratene Maultaschen",2,190,10,0],[33,"Käsespätzle",2,180,12,0],[34,"Schupfnudeln mit Speck und Kraut",2,190,12,0],[35,"Hähnchenschenkel mit Paprika",2,190,25,0],[36,"Halbes Hähnchen wie vom Grill",2,180,38,0],[37,"Schweinekotelett",2,190,12,0],[38,"Mariniertes Nackensteak",2,200,12,0],[39,"Cevapcici",2,190,10,0],[40,"Bratkartoffeln mit Speck",2,180,20,0],[41,"Zwiebelkuchen",2,170,28,0],[42,"Jägerschnitzel",2,200,8,0],[43,"Toast Hawaii",2,180,7,0],[44,"Kasseler im Blätterteig",2,180,22,0],[45,"Kohlrabi-Schnitzel",2,190,10,0],[46,"Schweinefilet im Speckmantel",2,190,20,0],[47,"Knusprige Schweinshaxe",2,180,25,0],[48,"Schaschlik-Spieße",2,190,14,0],[49,"Pommes selbst gemacht",3,180,20,1],[50,"Chicken Nuggets",3,190,14,1],[51,"Fischstäbchen selbst gemacht",3,190,12,1],[52,"Pizzaschnecken",3,170,14,1],[53,"Mini-Pizzen auf Vorrat",3,180,9,1],[54,"Frühlingsrollen mit Gemüse",3,190,12,1],[55,"Kartoffelkroketten zum Vorrat",3,180,15,1],[56,"Burger-Patties",3,190,14,1],[57,"Gemüse-Bratlinge",3,190,14,1],[58,"Falafel",3,190,14,1],[59,"Empanadas mit Hackfüllung",3,180,16,1],[60,"Burritos für die Woche",3,180,16,1],[61,"Laugenstangen mit Natron",3,170,7,1],[62,"Marinierte Hähnchenkeulen",3,180,32,1],[63,"Lachs-Päckchen mit Gemüse",3,180,18,1],[64,"Gemüse-Mix fürs schnelle Abendessen",3,200,14,1],[65,"Kräuterbaguette",3,180,8,1],[66,"Spinat-Feta-Taschen",3,180,16,1],[67,"Panierte Schnitzel auf Vorrat",3,190,16,1],[68,"Hähnchen-Gemüse-Spieße",3,190,16,1],[69,"Vorgebackene Brötchen",3,180,8,1],[70,"Quiche-Stücke mit Lauch und Schinken",3,160,14,1],[71,"Hähnchen-Gyros im Fladenbrot",4,190,12,0],[72,"Quesadillas mit Bohnen und Käse",4,180,8,0],[73,"Knusprige Gnocchi mit Tomaten",4,200,14,0],[74,"Überbackene Tortellini",4,180,12,0],[75,"Hot Dogs",4,180,6,0],[76,"Teriyaki-Hähnchen mit Brokkoli",4,190,14,0],[77,"Hackbällchen in Tomatensoße",4,190,14,0],[78,"Überbackenes Baguette",4,180,8,0],[79,"Naan-Pizza",4,190,7,0],[80,"Halloumi mit Röstgemüse",4,200,12,0],[81,"Putenstreifen mit Paprika",4,190,12,0],[82,"Shakshuka",4,180,12,0],[83,"Hähnchen-Fajitas",4,200,12,0],[84,"Knuspriger Tofu mit Erdnusssoße",4,200,14,0],[85,"Geröstete Kichererbsen-Bowl",4,200,12,0],[86,"Ofen-Feta mit Tomaten und Nudeln",4,200,15,0],[87,"Rindersteakstreifen mit Gemüse",4,200,8,0],[88,"Gebratener Reis mit Ei",4,200,12,0],[89,"Köttbullar mit Rahmsoße",4,200,10,0],[90,"Bruschetta-Hähnchen",4,190,16,0],[91,"Zucchini-Schiffchen mit Hack",4,180,16,0],[92,"Überbackene Nachos",4,180,6,0],[93,"Schinken-Spargel-Röllchen überbacken",4,180,10,0],[94,"Crispy Chicken Burger",4,190,12,0],[95,"Hähnchen-Satay-Spieße",4,200,10,0],[96,"Bauernfrühstück",4,180,12,0],[97,"Merguez mit Couscous",4,190,10,0],[98,"Semmelknödel-Scheiben mit Pilzen",4,190,10,0],[99,"Saftige Hähnchenbrust (Grundrezept)",5,180,17,0],[100,"Chicken Wings mit Paprika-Rub",5,190,24,0],[101,"Zitronen-Knoblauch-Hähnchenkeulen",5,190,18,0],[102,"Kleiner Puten-Rollbraten",5,170,42,0],[103,"Rinderhüftsteak",5,200,9,0],[104,"Cheeseburger",5,190,10,0],[105,"Schweinebauch-Streifen asiatisch",5,190,20,0],[106,"BBQ-Spareribs",5,180,20,0],[107,"Lammkoteletts mit Rosmarin",5,200,8,0],[108,"Gyros vom Schwein",5,200,14,0],[109,"Tandoori-Hähnchen",5,190,18,0],[110,"Hähnchenbrust mit Parmesan-Kräuterkruste",5,180,18,0],[111,"Hähnchen-Saltimbocca",5,190,10,0],[112,"Piri-Piri-Hähnchenkeulen",5,190,24,0],[113,"Schweinemedaillons",5,200,10,0],[114,"Bratwurstschnecke",5,190,16,0],[115,"Roastbeef rosa gegart",5,180,28,0],[116,"Kofta-Spieße mit Minze",5,190,12,0],[117,"Züricher Geschnetzeltes",5,200,7,0],[118,"Honig-Sesam-Wings",5,190,22,0],[119,"Schweinenackenbraten",5,170,58,0],[120,"Bifteki mit Feta-Füllung",5,190,14,0],[121,"Hähnchenkeule mit Kräuterbutter",5,190,29,0],[122,"Hähnchen-Cordon-bleu-Röllchen",5,180,18,0],[123,"Hähnchen mit Ofenkartoffeln",5,180,30,0],[124,"Gefüllte Hähnchenbrust mit Spinat",5,180,20,0],[125,"BBQ-Pulled-Chicken",5,190,18,0],[126,"Hähnchen-Chorizo-Spieße",5,190,14,0],[127,"Schweinelachssteak mit Kräuterbutter",5,200,10,0],[128,"Chicken Parmigiana",5,190,15,0],[129,"Lachsfilet mit Honig-Senf-Glasur",6,180,11,0],[130,"Backfisch mit Remoulade",6,190,12,0],[131,"Kabeljau mit Zitronenbutter",6,180,12,0],[132,"Knoblauch-Garnelen",6,200,7,0],[133,"Ganze Forelle mit Kräutern",6,180,16,0],[134,"Fischfrikadellen",6,190,12,0],[135,"Thunfischsteak mit Sesamkruste",6,200,6,0],[136,"Lachsspieße mit Zucchini",6,200,9,0],[137,"Rotbarschfilet mit Tomaten und Oliven",6,180,12,0],[138,"Kokos-Garnelen",6,190,8,0],[139,"Knusprige Calamari",6,200,8,0],[140,"Zanderfilet auf der Haut",6,190,10,0],[141,"Fisch-Tacos",6,190,10,0],[142,"Schlemmerfilet selbst gemacht",6,180,18,0],[143,"Jakobsmuscheln mit Speck",6,200,6,0],[144,"Lachs im Blätterteig",6,180,20,0],[145,"Gebratene grüne Heringe",6,190,10,0],[146,"Seelachs mit Senfsoße",6,180,12,0],[147,"Curry-Blumenkohl",7,200,14,0],[148,"Knuspriger Rosenkohl",7,190,14,0],[149,"Parmesan-Brokkoli",7,190,10,0],[150,"Gefüllte Champignons",7,180,10,0],[151,"Zucchini-Puffer",7,190,12,0],[152,"Auberginen mit Feta und Honig",7,200,14,0],[153,"Grüne Bohnen mit Mandeln",7,200,9,0],[154,"Ratatouille-Gemüse",7,200,16,0],[155,"Gefüllte Mini-Paprika",7,180,10,0],[156,"Überbackener Blumenkohl",7,180,14,0],[157,"Grüner Spargel mit Parmesan",7,200,8,0],[158,"Honig-Thymian-Möhren",7,190,16,0],[159,"Hokkaido-Kürbisspalten",7,190,18,0],[160,"Tomaten mit Couscous-Füllung",7,180,12,0],[161,"Rote-Bete-Spalten mit Ziegenkäse",7,190,14,0],[162,"Pilz-Gemüse-Spieße",7,200,10,0],[163,"Maiskolben mit Kräuterbutter",7,200,14,0],[164,"Pastinaken-Pommes",7,180,16,0],[165,"Rotkohl-Steaks",7,190,16,0],[166,"Brokkoli-Käse-Taler",7,190,12,0],[167,"Kartoffelspalten mit Paprika",8,180,22,0],[168,"Tiefkühl-Pommes richtig gemacht",8,180,15,0],[169,"Rosmarin-Drillinge",8,180,20,0],[170,"Rösti",8,180,16,0],[171,"Ofenkartoffel mit Kräuterquark",8,180,40,0],[172,"Süßkartoffel-Pommes",8,180,18,0],[173,"Hasselback-Kartoffeln",8,180,35,0],[174,"Kleines Kartoffelgratin",8,160,35,0],[175,"Smashed Potatoes",8,180,18,0],[176,"Herzoginkartoffeln",8,180,12,0],[177,"Polenta-Pommes",8,180,16,0],[178,"Parmesan-Kartoffelscheiben",8,180,14,0],[179,"Pellkartoffeln ohne Topf",8,180,30,0],[180,"Knusprige Croutons",8,180,6,0],[181,"Knusprige Zwiebelringe",8,190,10,0],[182,"Joghurt-Fladenbrot",8,180,8,0],[183,"Apfeltaschen",9,180,12,0],[184,"Zimtschnecken",9,160,14,0],[185,"Quarkbällchen",9,170,10,0],[186,"Schoko-Lava-Küchlein",9,180,9,0],[187,"Mini-Käsekuchen",9,150,18,0],[188,"Bananenbrot",9,150,35,0],[189,"Saftige Brownies",9,160,18,0],[190,"Kleiner Marmorkuchen",9,150,35,0],[191,"Churros mit Zimtzucker",9,190,10,0],[192,"Ofenschlupfer",9,160,25,0],[193,"Apfel-Crumble",9,170,18,0],[194,"Karamellisierte Pfirsiche",9,190,8,0],[195,"Chocolate-Chip-Cookies",9,160,9,0],[196,"Blaubeer-Muffins",9,160,15,0],[197,"Kirsch-Streuselkuchen",9,160,25,0],[198,"Kaiserschmarrn",9,180,12,0],[199,"Schoko-Croissants",9,180,10,0],[200,"Nussecken",9,160,22,0]];
+let chap=0;
+const cf=$("#chapFilter");
+["Alle"].concat(CHAPS.slice(1).map((c,i)=>(i+1)+" · "+c)).forEach((label,i)=>{
+  const b=document.createElement("button");b.type="button";b.textContent=label;b.setAttribute("aria-pressed",i===chap);
+  b.addEventListener("click",()=>{chap=i;$$("#chapFilter button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderRecipes()});cf.appendChild(b);
+});
+$("#qRec").addEventListener("input",renderRecipes);
+function renderRecipes(){
+  if(!$("#recList"))return;
+  const raw=$("#qRec").value.trim(); const q=norm(raw); const ul=$("#recList"); ul.innerHTML="";
+  let rows=REC.filter(r=>chap===0||r[2]===chap);
+  if(q){ rows=/^\d+$/.test(q)? rows.filter(r=>String(r[0])===q||String(r[0]).startsWith(q)) : rows.filter(r=>norm(r[1]).includes(q)); }
+  $("#recCount").textContent=rows.length===1?"1 Rezept":rows.length+" Rezepte";
+  if(!rows.length){ul.innerHTML=`<li class="empty">Kein Rezept gefunden. Versuch es mit der Nummer aus dem Buch.</li>`;return;}
+  const frag=document.createDocumentFragment();
+  rows.forEach(r=>{
+    const [n,name,c,t,m,fz]=r; const M=adj(m);
+    const li=document.createElement("li"); li.className="item";
+    li.innerHTML=`<div><div class="iname"><span class="num">${n}</span> · ${name}</div><div class="imeta">Kapitel ${c} · ${CHAPS[c]}${fz?' <span class="tag fz">direkt aus dem Gefrierfach</span>':''}</div></div>
+      <div class="iread">${t} °C<small>${M} Min.</small></div>
+      <button class="btn ghost" type="button">Timer ${M} Min. starten</button>`;
+    li.querySelector("button").addEventListener("click",()=>startTimer(M,n+" · "+name));
+    frag.appendChild(li);
+  });
+  ul.appendChild(frag);
+}
+
+/* ---------- Timer ---------- */
+let tInt=null, endAt=0, total=0, remain=0, paused=false, upTo=0, wake=null, actx=null;
+function beep(){
+  try{
+    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    [0,0.35,0.7].forEach(off=>{const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=880;o.connect(g);g.connect(actx.destination);
+      g.gain.setValueAtTime(0.0001,actx.currentTime+off);g.gain.exponentialRampToValueAtTime(0.3,actx.currentTime+off+0.02);g.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+off+0.28);
+      o.start(actx.currentTime+off);o.stop(actx.currentTime+off+0.3);});
+  }catch(e){}
+  try{navigator.vibrate&&navigator.vibrate([300,150,300,150,300])}catch(e){}
+}
+async function keepAwake(on){
+  try{ if(on&&"wakeLock" in navigator){wake=await navigator.wakeLock.request("screen");} else if(!on&&wake){await wake.release();wake=null;} }catch(e){}
+}
+function fmt(ms){const s=Math.max(0,Math.ceil(ms/1000));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function tick(){
+  const left=paused?remain:endAt-Date.now(); const el=$("#timer");
+  if(left<=0){
+    clearInterval(tInt);tInt=null;$("#tLeft").textContent="00:00";el.classList.add("done");
+    $("#tHint").textContent=upTo&&upTo>Math.round(total/60000)?`Jetzt prüfen. Bei Bedarf bis ${upTo} Min.`:"Jetzt prüfen, ob alles gar ist.";
+    $("#tPause").hidden=true;$("#tStop").textContent="Schließen";beep();keepAwake(false);return;
+  }
+  $("#tLeft").textContent=fmt(left);
+  $("#tHint").textContent=paused?"Pausiert":((total-left)>=total/2?"Schon geschüttelt?":"Halbzeit: schütteln/wenden");
+}
+function startTimer(mins,what,to){
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume&&actx.resume()}catch(e){}
+  clearInterval(tInt); total=mins*60000; endAt=Date.now()+total; paused=false; upTo=to||0;
+  const el=$("#timer"); el.hidden=false; el.classList.remove("done");
+  $("#tWhat").textContent=what+offLabel(); $("#tStop").textContent="Stopp"; $("#tPause").hidden=false; $("#tPause").textContent="Pause";
+  keepAwake(true); tick(); tInt=setInterval(tick,500);
+}
+$("#tPause").addEventListener("click",()=>{
+  if(!paused){remain=endAt-Date.now();paused=true;$("#tPause").textContent="Weiter";}
+  else{endAt=Date.now()+remain;paused=false;$("#tPause").textContent="Pause";}
+  tick();
+});
+$("#tStop").addEventListener("click",()=>{clearInterval(tInt);tInt=null;$("#timer").hidden=true;keepAwake(false)});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&tInt){keepAwake(true);tick()}});
+
+renderDevice();
+})();
+</script>
+</body>
+</html>
