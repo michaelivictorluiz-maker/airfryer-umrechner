@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Airfryer-Umrechner – Live-Demo</title>
+<script>if(/[?&]compact=1/.test(location.search))document.documentElement.classList.add("compact")</script>
 <style>
 /* Keine externen Schriften oder Skripte (DSGVO): nur Systemschriften. */
 :root{
@@ -106,6 +107,39 @@ nav.tabs button.locked{opacity:.8}
 .teaser{position:relative}
 .teaser ul{filter:blur(2.5px);pointer-events:none;user-select:none;opacity:.75}
 .demofoot{margin-top:14px;font-size:12.5px;color:var(--muted);text-align:center}
+
+/* Kompakt-Modus (?compact=1): nur der Umrechner, fuer die Verkaufsseite */
+html.compact body{background:transparent}
+html.compact .demobar,html.compact header.top,html.compact nav.tabs,html.compact #lockBox,
+html.compact .panel.teaser,html.compact #panel-convert>h2,html.compact #panel-convert>.lede,
+html.compact #convTimer,html.compact #convExplain,html.compact .demofoot,html.compact .dial .foot .chip:not(.hot){display:none!important}
+html.compact #demo{padding-top:0!important;padding-bottom:0!important}
+.sh{display:none}
+/* Kompakt v2: alles enger, eine Zeile pro Block */
+html.compact body{padding:0 4px 4px}
+html.compact #demo{padding:0 4px!important;border-radius:16px}
+html.compact section.panel{gap:8px;padding-top:0}
+html.compact .card{padding:10px;border-radius:14px}
+html.compact .card.stack{gap:9px}
+html.compact label,html.compact .lab{font-size:10.5px;margin-bottom:3px;letter-spacing:.05em}
+html.compact .seg{padding:3px;border-radius:10px}
+html.compact .seg button{min-height:36px;padding:6px 2px;font-size:13px}
+html.compact .seg .lg{display:none}html.compact .seg .sh{display:inline}
+html.compact .row,html.compact .row>div:first-child{grid-template-columns:1fr 1fr 1fr!important;grid-column:auto!important;gap:8px}
+html.compact input{font-size:16px;padding:7px 9px;border-radius:9px}
+html.compact .chips{flex-wrap:nowrap;gap:5px}
+html.compact .chips button{flex:1 1 0;min-width:0;min-height:34px;padding:5px 4px;font-size:12.5px;white-space:nowrap}
+html.compact .chips .lg{display:none}
+html.compact .dial{padding:10px 14px;border-radius:14px;gap:4px 10px;grid-template-columns:1fr 1.3fr}
+html.compact .dial::after{width:140px;height:140px;right:-50px;top:-50px}
+html.compact .val{font-size:26px}
+html.compact .val span{font-size:13px}
+html.compact .dial .foot{margin-top:2px}
+html.compact .chip{font-size:11.5px;padding:3px 9px}
+html.compact #convMsgs{gap:6px!important}
+html.compact .msg{padding:7px 10px;font-size:12.5px;line-height:1.35;gap:8px;border-radius:10px}
+html.compact .msg .dot{width:8px;height:8px;margin-top:5px}
+@media (min-width:600px){html.compact .chips button{flex:1 1 auto;padding:5px 10px}html.compact .chips .lg{display:inline}html.compact .seg .lg{display:inline}html.compact .seg .sh{display:none}html.compact .seg button{min-height:44px}}
 </style>
 </head>
 <body>
@@ -135,9 +169,9 @@ nav.tabs button.locked{opacity:.8}
       <div>
         <span class="lab" id="lblMode">Auf der Packung steht</span>
         <div class="seg c3" id="mode" role="group" aria-labelledby="lblMode">
-          <button type="button" data-mode="umluft" aria-pressed="true">Umluft /<br>Heißluft</button>
-          <button type="button" data-mode="ou" aria-pressed="false">Ober-/<br>Unterhitze</button>
-          <button type="button" data-mode="af" aria-pressed="false">Schon eine<br>Airfryer-Angabe</button>
+          <button type="button" data-mode="umluft" aria-pressed="true"><span class="lg">Umluft /<br>Heißluft</span><span class="sh">Umluft</span></button>
+          <button type="button" data-mode="ou" aria-pressed="false"><span class="lg">Ober-/<br>Unterhitze</span><span class="sh">Ober/Unter</span></button>
+          <button type="button" data-mode="af" aria-pressed="false"><span class="lg">Schon eine<br>Airfryer-Angabe</span><span class="sh">Airfryer</span></button>
         </div>
       </div>
       <div class="row">
@@ -149,9 +183,9 @@ nav.tabs button.locked{opacity:.8}
         <span class="lab" id="lblKind">Was kommt in den Korb?</span>
         <div class="chips" id="kind" role="group" aria-labelledby="lblKind">
           <button type="button" data-kind="other" aria-pressed="true">Sonstiges</button>
-          <button type="button" data-kind="potato" aria-pressed="false">Kartoffelprodukt</button>
-          <button type="button" data-kind="meat" aria-pressed="false">Fleisch & Geflügel</button>
-          <button type="button" data-kind="bake" aria-pressed="false">Kuchen & Gebäck</button>
+          <button type="button" data-kind="potato" aria-pressed="false">Kartoffel<span class="lg">produkt</span></button>
+          <button type="button" data-kind="meat" aria-pressed="false">Fleisch<span class="lg"> & Geflügel</span></button>
+          <button type="button" data-kind="bake" aria-pressed="false">Kuchen<span class="lg"> & Gebäck</span></button>
         </div>
       </div>
     </div>
@@ -261,7 +295,7 @@ function sendH(){
   });
 }
 window.addEventListener("resize",()=>{lastH=0;sendH()});
-window.addEventListener("load",sendH);
+window.addEventListener("load",()=>{sendH();[600,1500,3000].forEach(ms=>setTimeout(()=>{lastH=0;sendH()},ms))});
 convert();
 })();
 </script>
